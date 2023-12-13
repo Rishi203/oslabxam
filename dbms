@@ -50,3 +50,54 @@ BEGIN
   :NEW.last_modified := SYSTIMESTAMP;
 END;
 /
+
+
+-- Create a PL/SQL package
+CREATE OR REPLACE PACKAGE HR_PACKAGE AS
+  -- Procedure to update employee salary by 10%
+  PROCEDURE update_salary(
+    p_employee_id IN NUMBER,
+    p_new_salary   OUT NUMBER
+  );
+
+  -- Function to calculate net salary after a 5% tax deduction
+  FUNCTION calculate_net_salary(
+    p_salary IN NUMBER
+  ) RETURN NUMBER;
+  
+END HR_PACKAGE;
+/
+
+
+
+
+-- Create the package body
+CREATE OR REPLACE PACKAGE BODY HR_PACKAGE AS
+  -- Procedure to update employee salary by 10%
+  PROCEDURE update_salary(
+    p_employee_id IN NUMBER,
+    p_new_salary   OUT NUMBER
+  ) IS
+    v_bonus_percentage NUMBER := 0.1; -- 10% bonus
+    v_tax_percentage   NUMBER := 0.05; -- 5% tax
+  BEGIN
+    -- Assuming you have an employees table with a salary column
+    UPDATE employees
+    SET salary = salary * (1 + v_bonus_percentage)
+    WHERE employee_id = p_employee_id
+    RETURNING salary INTO p_new_salary;
+  END update_salary;
+
+  -- Function to calculate net salary after a 5% tax deduction
+  FUNCTION calculate_net_salary(
+    p_salary IN NUMBER
+  ) RETURN NUMBER IS
+    v_tax_percentage NUMBER := 0.05; -- 5% tax
+    v_net_salary NUMBER;
+  BEGIN
+    v_net_salary := p_salary * (1 - v_tax_percentage);
+    RETURN v_net_salary;
+  END calculate_net_salary;
+  
+END HR_PACKAGE;
+/
