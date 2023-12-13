@@ -1,0 +1,52 @@
+-- Create a PL/SQL package
+CREATE OR REPLACE PACKAGE HR_PACKAGE AS
+  -- Procedure to add a new employee
+  PROCEDURE add_employee(
+    p_employee_id   IN NUMBER,
+    p_employee_name IN VARCHAR2,
+    p_salary        IN NUMBER
+  );
+
+  -- Function to calculate annual bonus
+  FUNCTION calculate_annual_bonus(
+    p_salary IN NUMBER
+  ) RETURN NUMBER;
+  
+END HR_PACKAGE;
+/
+
+-- Create the package body
+CREATE OR REPLACE PACKAGE BODY HR_PACKAGE AS
+  -- Procedure to add a new employee
+  PROCEDURE add_employee(
+    p_employee_id   IN NUMBER,
+    p_employee_name IN VARCHAR2,
+    p_salary        IN NUMBER
+  ) IS
+  BEGIN
+    INSERT INTO employees (employee_id, employee_name, salary)
+    VALUES (p_employee_id, p_employee_name, p_salary);
+  END add_employee;
+
+  -- Function to calculate annual bonus
+  FUNCTION calculate_annual_bonus(
+    p_salary IN NUMBER
+  ) RETURN NUMBER IS
+    v_bonus_percentage NUMBER := 0.1; -- 10% bonus
+  BEGIN
+    RETURN p_salary * v_bonus_percentage;
+  END calculate_annual_bonus;
+  
+END HR_PACKAGE;
+/
+
+
+
+CREATE OR REPLACE TRIGGER trg_update_last_modified
+BEFORE UPDATE ON your_table_name
+FOR EACH ROW
+BEGIN
+  -- Update the last_modified column with the current timestamp
+  :NEW.last_modified := SYSTIMESTAMP;
+END;
+/
